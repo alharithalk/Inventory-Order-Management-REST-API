@@ -100,6 +100,8 @@ public class OrderService {
                 product.setStockQuantity(product.getStockQuantity() + item.getQuantity());
                 productRepository.save(product);
             }
+        } else if (order.getStatus() != OrderStatus.DRAFT) {
+            throw new RuntimeException("Cannot cancel order with status: " + order.getStatus());
         }
         order.setStatus(OrderStatus.CANCELLED);
         return orderRepository.save(order);
