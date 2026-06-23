@@ -28,25 +28,13 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryRequest request) {
-        try {
-            Category category = categoryService.createCategory(request.getName());
-            return ResponseEntity.status(HttpStatus.CREATED).body(category);
-        } catch (RuntimeException e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Category> createCategory(@Valid @RequestBody CategoryRequest request) {
+        Category category = categoryService.createCategory(request.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
 
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());
-    }
-
-    private ResponseEntity<String> handleException(RuntimeException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "An error occurred";
-        if (message.toLowerCase().contains("not found")) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-        }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
     }
 }

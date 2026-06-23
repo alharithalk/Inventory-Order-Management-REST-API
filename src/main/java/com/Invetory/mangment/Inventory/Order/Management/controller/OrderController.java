@@ -36,62 +36,34 @@ public class OrderController {
     }
 
     @PostMapping("/{orderId}/items")
-    public ResponseEntity<?> addItem(@PathVariable Long orderId,
-                                     @Valid @RequestBody AddItemRequest request) {
-        try {
-            Order order = orderService.addItemToOrder(orderId, request.getProductId(), request.getQuantity());
-            return ResponseEntity.status(HttpStatus.CREATED).body(order);
-        } catch (RuntimeException e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Order> addItem(@PathVariable Long orderId,
+                                         @Valid @RequestBody AddItemRequest request) {
+        Order order = orderService.addItemToOrder(orderId, request.getProductId(), request.getQuantity());
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
     @DeleteMapping("/{orderId}/items/{itemId}")
-    public ResponseEntity<?> removeItem(@PathVariable Long orderId, @PathVariable Long itemId) {
-        try {
-            orderService.removeItemFromOrder(orderId, itemId);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Void> removeItem(@PathVariable Long orderId, @PathVariable Long itemId) {
+        orderService.removeItemFromOrder(orderId, itemId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{orderId}/confirm")
-    public ResponseEntity<?> confirmOrder(@PathVariable Long orderId) {
-        try {
-            Order order = orderService.confirmOrder(orderId);
-            return ResponseEntity.ok(order);
-        } catch (RuntimeException e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Order> confirmOrder(@PathVariable Long orderId) {
+        Order order = orderService.confirmOrder(orderId);
+        return ResponseEntity.ok(order);
     }
 
     @PostMapping("/{orderId}/status")
-    public ResponseEntity<?> updateStatus(@PathVariable Long orderId,
-                                          @Valid @RequestBody StatusRequest request) {
-        try {
-            Order order = orderService.updateOrderStatus(orderId, request.getStatus());
-            return ResponseEntity.ok(order);
-        } catch (RuntimeException e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Order> updateStatus(@PathVariable Long orderId,
+                                              @Valid @RequestBody StatusRequest request) {
+        Order order = orderService.updateOrderStatus(orderId, request.getStatus());
+        return ResponseEntity.ok(order);
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<?> getOrder(@PathVariable Long orderId) {
-        try {
-            Order order = orderService.getOrderById(orderId);
-            return ResponseEntity.ok(order);
-        } catch (RuntimeException e) {
-            return handleException(e);
-        }
-    }
-
-    private ResponseEntity<String> handleException(RuntimeException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "An error occurred";
-        if (message.toLowerCase().contains("not found")) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-        }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+    public ResponseEntity<Order> getOrder(@PathVariable Long orderId) {
+        Order order = orderService.getOrderById(orderId);
+        return ResponseEntity.ok(order);
     }
 }

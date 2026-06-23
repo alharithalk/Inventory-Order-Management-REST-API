@@ -34,30 +34,14 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerRequest request) {
-        try {
-            Customer customer = customerService.createCustomer(request.getName(), request.getEmail());
-            return ResponseEntity.status(HttpStatus.CREATED).body(customer);
-        } catch (RuntimeException e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody CustomerRequest request) {
+        Customer customer = customerService.createCustomer(request.getName(), request.getEmail());
+        return ResponseEntity.status(HttpStatus.CREATED).body(customer);
     }
 
     @PostMapping("/{customerId}/orders")
-    public ResponseEntity<?> createOrder(@PathVariable Long customerId) {
-        try {
-            Order order = orderService.createOrder(customerId);
-            return ResponseEntity.status(HttpStatus.CREATED).body(order);
-        } catch (RuntimeException e) {
-            return handleException(e);
-        }
-    }
-
-    private ResponseEntity<String> handleException(RuntimeException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "An error occurred";
-        if (message.toLowerCase().contains("not found")) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-        }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+    public ResponseEntity<Order> createOrder(@PathVariable Long customerId) {
+        Order order = orderService.createOrder(customerId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 }

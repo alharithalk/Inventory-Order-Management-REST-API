@@ -41,41 +41,25 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createProduct(@Valid @RequestBody CreateProductRequest request) {
-        try {
-            Product product = productService.createProduct(
-                    request.getName(),
-                    request.getPrice(),
-                    request.getStockQuantity(),
-                    request.getCategoryId()
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body(product);
-        } catch (RuntimeException e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody CreateProductRequest request) {
+        Product product = productService.createProduct(
+                request.getName(),
+                request.getPrice(),
+                request.getStockQuantity(),
+                request.getCategoryId()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
     @PostMapping("/{productId}/stock-adjustment")
-    public ResponseEntity<?> adjustStock(@PathVariable Long productId,
-                                         @Valid @RequestBody StockAdjustmentRequest request) {
-        try {
-            Product product = productService.adjustStock(productId, request.getAmount());
-            return ResponseEntity.ok(product);
-        } catch (RuntimeException e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Product> adjustStock(@PathVariable Long productId,
+                                               @Valid @RequestBody StockAdjustmentRequest request) {
+        Product product = productService.adjustStock(productId, request.getAmount());
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping("/low-stock")
     public ResponseEntity<List<Product>> getLowStock(@RequestParam int threshold) {
         return ResponseEntity.ok(productService.getLowStockProducts(threshold));
-    }
-
-    private ResponseEntity<String> handleException(RuntimeException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "An error occurred";
-        if (message.toLowerCase().contains("not found")) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-        }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
     }
 }
