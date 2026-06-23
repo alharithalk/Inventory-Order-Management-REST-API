@@ -1,4 +1,7 @@
 package com.Invetory.mangment.Inventory.Order.Management.repository;
 
-public interface OrderItemRepository {
+import com.Invetory.mangment.Inventory.Order.Management.entity.OrderItem;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 }
